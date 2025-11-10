@@ -1,4 +1,6 @@
-let productsHTML = "";
+import { cart } from '../data/cart.js';
+
+let productsHTML = '';
 
 products.forEach((product) => {
   productsHTML += `
@@ -56,11 +58,11 @@ products.forEach((product) => {
 });
 
 // Generate main page HTML by data with Javascript
-document.querySelector(".js-products-grid").innerHTML = productsHTML;
+document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-// Add to Card button functionality
-document.querySelectorAll(".js-add-to-cart").forEach((button) => {
-  button.addEventListener("click", () => {
+// 'Add to Card' button functionality
+document.querySelectorAll('.js-add-to-cart').forEach((button) => {
+  button.addEventListener('click', () => {
     const productId = button.dataset.productId;
 
     // check if item is already in the cart
@@ -79,6 +81,14 @@ document.querySelectorAll(".js-add-to-cart").forEach((button) => {
         quantity: 1,
       });
     }
-    console.log(cart);
+
+    // Adding up cart quantity
+    let cartQuantity = 0;
+    cart.forEach((item) => {
+      cartQuantity += item.quantity;
+    });
+
+    // Adding cart quantity to top-right section of the page
+    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
   });
 });
