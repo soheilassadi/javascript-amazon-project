@@ -19,6 +19,9 @@ cart.forEach((cartItem) => {
   const dateString = dayjs()
     .add(deliveryOption.deliveryDays, 'days')
     .format('dddd, MMMM D');
+    
+  // refresh checkout items count
+  updateCheckoutItems();
 
   cartSummaryHTML += `
   <div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
@@ -155,6 +158,9 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
       `.js-cart-item-container-${productId}`
     );
     if (container) container.remove();
+
+    // refresh checkout items count
+    updateCheckoutItems();
   });
 });
 
@@ -164,3 +170,17 @@ document.querySelectorAll('.js-delivery-option').forEach((element) => {
     updateDeliveryOption(productId, deliveryOptionId);
   });
 });
+
+// fixing top of the page checkout items
+function updateCheckoutItems() {
+  let itemAmount = 0;
+  cart.forEach((item) => {
+    itemAmount += item.quantity;
+  });
+  const result =
+    itemAmount === 0 || itemAmount === 1
+      ? `${itemAmount} Item`
+      : `${itemAmount} Items`;
+  document.querySelector('.return-to-home-link').innerHTML = result;
+}
+updateCheckoutItems();
