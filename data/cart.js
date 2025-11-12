@@ -45,6 +45,21 @@ export function addToCart(productId) {
   saveToStorage();
 }
 
+export function updateQuantity(productId, newQuantity) {
+  const matchingItem = cart.find(
+    (cartItem) => String(cartItem.productId) === String(productId)
+  );
+
+  if (matchingItem) {
+    matchingItem.quantity = Number(newQuantity);
+    if (matchingItem.quantity <= 0) {
+      // remove instead of keeping zero or negative
+      cart = cart.filter((ci) => String(ci.productId) !== String(productId));
+    }
+    saveToStorage();
+  }
+}
+
 // function to remove product from the cart
 export function removeFromCart(productId) {
   const newCart = [];

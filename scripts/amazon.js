@@ -76,8 +76,12 @@ function updateCartQuantity() {
 document.querySelectorAll('.js-add-to-cart').forEach((button) => {
   button.addEventListener('click', () => {
     const productId = button.dataset.productId;
+    // find the select inside the same product container and read value
+    const container = button.closest('.product-container');
+    const select = container ? container.querySelector('select') : null;
+    const qty = select ? Number(select.value) : 1;
     // Adding item to cart, function is in cart.js
-    addToCart(productId);
+    addToCart(productId, qty);
     // Updating top-right cart indicator
     updateCartQuantity();
   });
