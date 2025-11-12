@@ -1,3 +1,5 @@
+import { getProduct } from './products.js';
+
 export let cart = JSON.parse(localStorage.getItem('cart'));
 
 // Give a default value for now if the cart is null
@@ -25,12 +27,8 @@ function saveToStorage() {
 // function to use in amazon.js '.js-add-to-cart' element
 export function addToCart(productId) {
   // check if item is already in the cart
-  let matchingItem;
-  cart.forEach((cartItem) => {
-    if (productId === cartItem.productId) {
-      matchingItem = cartItem;
-    }
-  });
+  const matchingItem = getProduct(productId);
+
   // if it is, increasing quantity by 1
   if (matchingItem) {
     matchingItem.quantity += 1;
@@ -59,12 +57,8 @@ export function removeFromCart(productId) {
 }
 
 export function updateDeliveryOption(productId, deliveryOptionId) {
-  let matchingItem;
-  cart.forEach((cartItem) => {
-    if (productId === cartItem.productId) {
-      matchingItem = cartItem;
-    }
-  });
+  // function getProduct() in 'products.js'
+  const matchingItem = getProduct(productId);
 
   matchingItem.deliveryOptionId = deliveryOptionId;
 

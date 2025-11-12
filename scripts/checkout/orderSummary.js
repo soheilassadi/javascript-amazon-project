@@ -1,22 +1,25 @@
 import { cart, removeFromCart, updateDeliveryOption } from '../../data/cart.js';
-import { products } from '../../data/products.js';
+import { products, getProduct } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
-import { deliveryOptions } from '../../data/deliveryOptions.js';
+import {
+  deliveryOptions,
+  getDeliveryOption,
+} from '../../data/deliveryOptions.js';
 
 // rendering the checkout page
 export function renderOrderSummary() {
   let cartSummaryHTML = '';
 
   cart.forEach((cartItem) => {
-    // find matching product (safer than manual loop)
-    const matchingProduct = products.find((p) => p.id === cartItem.productId);
-    if (!matchingProduct) return; // skip if product missing
+    const productId = String(cartItem.productId);
 
-    // find delivery option, fallback to first option if missing
-    const deliveryOption =
-      deliveryOptions.find((opt) => opt.id === cartItem.deliveryOptionId) ||
-      deliveryOptions[0];
+    const matchingProduct = getProduct(productId);
+
+    const deliveryOptionId = cartItem.deliveryOptionId;
+
+    // function from 'deliveryOptions.js'
+    const deliveryOption = getDeliveryOption(deliveryOptionId);
 
     const dateString = dayjs()
       .add(deliveryOption.deliveryDays, 'days')
@@ -151,7 +154,7 @@ export function renderOrderSummary() {
   // delete functionality (guard DOM removal)
   document.querySelectorAll('.js-delete-link').forEach((link) => {
     link.addEventListener('click', () => {
-      const productId = link.dataset.productId;
+      const productId = String(link.dataset.productId);
       // remove from cart data
       removeFromCart(productId);
 
@@ -187,4 +190,3 @@ export function renderOrderSummary() {
   }
   updateCheckoutItems();
 }
-
