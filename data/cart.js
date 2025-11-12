@@ -27,7 +27,9 @@ function saveToStorage() {
 // function to use in amazon.js '.js-add-to-cart' element
 export function addToCart(productId) {
   // check if item is already in the cart
-  const matchingItem = getProduct(productId);
+  const matchingItem = cart.find(
+    (cartItem) => String(cartItem.productId) === String(productId)
+  );
 
   // if it is, increasing quantity by 1
   if (matchingItem) {
@@ -57,10 +59,12 @@ export function removeFromCart(productId) {
 }
 
 export function updateDeliveryOption(productId, deliveryOptionId) {
-  // function getProduct() in 'products.js'
-  const matchingItem = getProduct(productId);
+  const matchingItem = cart.find(
+    (cartItem) => String(cartItem.productId) === String(productId)
+  );
 
-  matchingItem.deliveryOptionId = deliveryOptionId;
-
-  saveToStorage();
+  if (matchingItem) {
+    matchingItem.deliveryOptionId = deliveryOptionId;
+    saveToStorage();
+  }
 }

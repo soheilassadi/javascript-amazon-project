@@ -125,30 +125,12 @@ export function renderOrderSummary() {
       // input.name is "delivery-option-<productId>"
       const productId = input.name.replace('delivery-option-', '');
 
-      // update cart data (mutate imported cart array)
-      const cartItem = cart.find(
-        (ci) => String(ci.productId) === String(productId)
-      );
-      if (cartItem) {
-        cartItem.deliveryOptionId = optionId;
-      }
+      // update cart data using the function
+      updateDeliveryOption(productId, optionId);
 
-      // compute new date string and update the delivery-date element inside this item's container
-      const selectedOption =
-        deliveryOptions.find((opt) => String(opt.id) === String(optionId)) ||
-        deliveryOptions[0];
-      const dateString = dayjs()
-        .add(selectedOption.deliveryDays, 'days')
-        .format('dddd, MMMM D');
-
-      const container = document.querySelector(
-        `.js-cart-item-container-${productId}`
-      );
-      if (container) {
-        const deliveryDateEl = container.querySelector('.delivery-date');
-        if (deliveryDateEl)
-          deliveryDateEl.textContent = `Delivery date: ${dateString}`;
-      }
+      // re-render to update everything
+      renderOrderSummary();
+      renderPaymentSummary();
     });
   });
 
@@ -173,14 +155,22 @@ export function renderOrderSummary() {
     });
   });
 
-  document.querySelectorAll('.js-delivery-option').forEach((element) => {
-    element.addEventListener('click', () => {
-      const { productId, deliveryOptionId } = element.dataset;
-      updateDeliveryOption(productId, deliveryOptionId);
-      // updating payment section
+  
+  // add listeners so choosing a radio updates cart data and the item's top delivery date
+  document.querySelectorAll('.delivery-option-input').forEach((input) => {
+    input.addEventListener('change', (event) => {
+      const optionId = input.dataset.optionId ?? input.value;
+      // input.name is "delivery-option-<productId>"
+      const productId = input.name.replace('delivery-option-', '');
+
+      // update cart data using the function
+      updateDeliveryOption(productId, optionId);
+
+      // only update payment summary, not the entire order summary
       renderPaymentSummary();
     });
   });
+  
 
   // fixing top of the page checkout items
   function updateCheckoutItems() {
