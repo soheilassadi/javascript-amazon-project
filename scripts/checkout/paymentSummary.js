@@ -7,7 +7,11 @@ export function renderPaymentSummary() {
   let productPriceCents = 0;
   let shippingPriceCents = 0;
 
+  // compute total item count once
+  let itemAmount = 0;
   cart.forEach((cartItem) => {
+    itemAmount += cartItem.quantity;
+
     const product = getProduct(cartItem.productId);
     // product * quantity
     productPriceCents += product.priceCents * cartItem.quantity;
@@ -16,17 +20,21 @@ export function renderPaymentSummary() {
     shippingPriceCents += deliveryOption.priceCents;
   });
 
+  const itemCountLabel =
+    itemAmount === 0 || itemAmount === 1
+      ? `Item (${itemAmount}):`
+      : `Items (${itemAmount}):`;
+
   const totalBeforeTaxCents = productPriceCents + shippingPriceCents;
   // Tax estimation %10
   const taxCents = totalBeforeTaxCents * 0.1;
-
   const totalCents = totalBeforeTaxCents + taxCents;
 
   const paymentSummaryHTML = `
         <div class="payment-summary-title">Order Summary</div>
 
         <div class="payment-summary-row">
-            <div>Items (3):</div>
+            <div class="js-item-count">${itemCountLabel}</div>
             <div class="payment-summary-money">
                 $${formatCurrency(productPriceCents)}
             </div>
