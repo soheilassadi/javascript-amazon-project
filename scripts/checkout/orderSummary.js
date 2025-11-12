@@ -6,6 +6,7 @@ import {
   deliveryOptions,
   getDeliveryOption,
 } from '../../data/deliveryOptions.js';
+import { renderPaymentSummary } from './paymentSummary.js';
 
 // rendering the checkout page
 export function renderOrderSummary() {
@@ -164,6 +165,9 @@ export function renderOrderSummary() {
       );
       if (container) container.remove();
 
+      // updating payment section
+      renderPaymentSummary();
+
       // refresh checkout items count
       updateCheckoutItems();
     });
@@ -173,6 +177,8 @@ export function renderOrderSummary() {
     element.addEventListener('click', () => {
       const { productId, deliveryOptionId } = element.dataset;
       updateDeliveryOption(productId, deliveryOptionId);
+      // updating payment section
+      renderPaymentSummary();
     });
   });
 
